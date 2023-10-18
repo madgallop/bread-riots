@@ -1,5 +1,5 @@
 var config = {
-    style: 'mapbox://styles/mapbox/light-v11',
+    style: 'mapbox://styles/madgallop/clnv6jj6h001c01pdf1lde9lk',
     accessToken: 'pk.eyJ1IjoibWFkZ2FsbG9wIiwiYSI6ImNsbmx1MnpyNjAxcHEydG1zZDFnZG9zc2IifQ.XbyjH1tI-DMwrOdHHDPKQQ',
     showMarkers: true,
     markerColor: '#3FB1CE',
