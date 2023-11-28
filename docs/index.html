@@ -26,9 +26,9 @@
         }
         #mapInset {
             bottom:50px;
-            right:30px;
-            height: 180px;
-            width:250px;
+            left:30px;
+            height: 130px;
+            width:200px;
             max-width:100%;
             position: fixed;
             z-index: 1;
@@ -284,7 +284,7 @@ var map = new mapboxgl.Map({
 if (config.inset) {
  var insetMap = new mapboxgl.Map({
     container: 'mapInset', // container id
-    style: 'mapbox://styles/mapbox/dark-v10', //hosted style id
+    style: 'mapbox://styles/madgallop/clpek7wmg006401p7f4807fdg',
     center: config.chapters[0].location.center,
     // Hardcode above center value if you want insetMap to be static.
     zoom: 3, // starting zoom
@@ -307,6 +307,142 @@ var scroller = scrollama();
 
 
 map.on("load", function() {
+    map.addSource('places', {
+        // This GeoJSON contains features that include an "icon"
+        // property. The value of the "icon" property corresponds
+        // to an image in the Mapbox Streets style's sprite.
+        'type': 'geojson',
+        'data': {
+        'type': 'FeatureCollection',
+        'features': [
+        {
+        'type': 'Feature',
+        'properties': {
+        'description':
+        '<strong>Sidon, August 1987</strong><p><a href="https://www.nytimes.com/1987/08/30/world/lebanon-food-protests-spread.html" target="_blank">Marchers</a>  in the southern town of Sidon today chanted, We are hungry! We want to eat! The protests were peaceful, and shops remained closed for the day</p>',
+        'icon': 'border-dot-13',
+        },
+        'geometry': {
+        'type': 'Point',
+        'coordinates': [35.371060, 33.554709]
+        }
+        },
+        {
+        'type': 'Feature',
+        'properties': {
+        'description':
+        '<strong>Rasheiye, August 1987</strong><p><a href="https://www.nytimes.com/1987/08/30/world/lebanon-food-protests-spread.html" target="_blank">The police reported</a> protest marches in Rasheiye, but said the demonstrators dispersed peacefully.</p>',
+        'icon': 'border-dot-13',
+        },
+        'geometry': {
+        'type': 'Point',
+        'coordinates': [35.83333, 33.507664636]
+        }
+        },
+        {
+        'type': 'Feature',
+        'properties': {
+        'description':
+        '<strong>West Beirut, August 1987</strong><p><a href="https://www.nytimes.com/1987/08/30/world/lebanon-food-protests-spread.html" target="_blank">Protests</a> over food prices spread today from the capital to other Lebanese towns as steel-helmeted Syrian soldiers with heavy machine guns continued to patrol the main shopping centers in mainly Moslem West Beirut to prevent further disturbances.</p>',
+        'icon': 'border-dot-13',
+        },
+        'geometry': {
+        'type': 'Point',
+        'coordinates': [35.481899, 33.897288]
+        }
+        },
+        {
+        'type': 'Feature',
+        'properties': {
+        'description':
+        '<strong>The Highway to Beirut Airport, August 1987</strong><p><a href="https://www.latimes.com/archives/la-xpm-1987-08-29-mn-1369-story.html" target="_blank">Men carrying automatic rifles</a> and rocket-propelled grenades joined other rioters in setting tires ablaze on the highway to Beirut airport, blocking traffic for four hours. Holding their weapons high, the gunmen shouted: Death to America! Death to France! Death to Israel! Some rioters waved posters of Shia militia chieftain Nabih Berri and the Ayatollah Ruhollah Khomeini, Iran’s revolutionary patriarch. They stoned the few motorists who braved the blazing barriers on the airport highway.</p>',
+        'icon': 'border-dot-13',
+        },
+        'geometry': {
+        'type': 'Point',
+        'coordinates': [ 35.494157, 33.864615]
+        }
+        },
+        {
+        'type': 'Feature',
+        'properties': {
+        'description':
+        '<strong>Corniche Mazraa, August 1987</strong><p><a href="https://www.latimes.com/archives/la-xpm-1987-08-29-mn-1369-story.html" target="_blank">Protestors</a> marched down West Beirut’s Corniche Mazraa commercial thoroughfare chanting slogans. “We want food! We want medicine! We want fuel!” they shouted. Heavily armed Syrian soldiers surrounded the marchers as they chanted: “Down with the dollar! Down with imperialism!”</p>',
+        'icon': 'border-dot-13',
+        },
+        'geometry': {
+        'type': 'Point',
+        'coordinates': [35.47958, 33.88347]
+        }
+        },
+        {
+        'type': 'Feature',
+        'properties': {
+        'description':
+        '<strong>West Beirut, August 1987</strong><p><a href="https://www.nytimes.com/1987/08/30/world/lebanon-food-protests-spread.html" target="_blank">In West Beirut,</a>"In Muslim West Beirut, Syrian commandos fired automatic rifles in the air to disperse about 30 rioters who tried to block traffic with burning tires. Shops, banks and restaurants on the avenue closed for the day. Money changers throughout West Beirut shut their booths to escape the wrath of rioters, who smashed the glass fronts of several money exchanges Thursday in the Hamra district."</p>',
+        'icon': 'border-dot-13',
+        },
+        'geometry': {
+        'type': 'Point',
+        'coordinates': [35.481899, 33.897288]
+        }
+        },
+        {
+        'type': 'Feature',
+        'properties': {
+        'description':
+        '<strong>West Beirut, August 1987</strong><p><a href="https://www.nytimes.com/1987/08/30/world/lebanon-food-protests-spread.html" target="_blank">In West Beirut,</a>"In Muslim West Beirut, Syrian commandos fired automatic rifles in the air to disperse about 30 rioters who tried to block traffic with burning tires. Shops, banks and restaurants on the avenue closed for the day. Money changers throughout West Beirut shut their booths to escape the wrath of rioters, who smashed the glass fronts of several money exchanges Thursday in the Hamra district."</p>',
+        'icon': 'border-dot-13',
+        },
+        'geometry': {
+        'type': 'Point',
+        'coordinates': [35.481899, 33.897288]
+        }
+        },
+        ]
+        }
+        });
+        // Add a layer showing the places.
+        map.addLayer({
+        'id': 'places',
+        'type': 'symbol',
+        'source': 'places',
+        'layout': {
+        'icon-image': ['get', 'icon'],
+        'icon-size': 1,
+        'icon-allow-overlap': true,
+        }
+        });
+        
+        // When a click event occurs on a feature in the places layer, open a popup at the
+        // location of the feature, with description HTML from its properties.
+        map.on('click', 'places', (e) => {
+        // Copy coordinates array.
+        const coordinates = e.features[0].geometry.coordinates.slice();
+        const description = e.features[0].properties.description;
+        
+        // Ensure that if the map is zoomed out such that multiple
+        // copies of the feature are visible, the popup appears
+        // over the copy being pointed to.
+        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        }
+        
+        new mapboxgl.Popup()
+        .setLngLat(coordinates)
+        .setHTML(description)
+        .addTo(map);
+        });
+        
+        // Change the cursor to a pointer when the mouse is over the places layer.
+        map.on('mouseenter', 'places', () => {
+        map.getCanvas().style.cursor = 'pointer';
+        });
+        
+        // Change it back to a pointer when it leaves.
+        map.on('mouseleave', 'places', () => {
+        map.getCanvas().style.cursor = '';
+        });
     if (config.use3dTerrain) {
         map.addSource('mapbox-dem', {
             'type': 'raster-dem',

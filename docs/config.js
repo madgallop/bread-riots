@@ -1,13 +1,13 @@
 var config = {
-    style: 'mapbox://styles/madgallop/clnv6jj6h001c01pdf1lde9lk',
+    style: 'mapbox://styles/madgallop/clpek7wmg006401p7f4807fdg',
     accessToken: 'pk.eyJ1IjoibWFkZ2FsbG9wIiwiYSI6ImNsbmx1MnpyNjAxcHEydG1zZDFnZG9zc2IifQ.XbyjH1tI-DMwrOdHHDPKQQ',
-    showMarkers: true,
+    showMarkers: false,
     markerColor: '#3FB1CE',
     //projection: 'equirectangular',
     //Read more about available projections here
     //https://docs.mapbox.com/mapbox-gl-js/example/projections/
     inset: true,
-    theme: 'dark',
+    theme: 'light',
     use3dTerrain: false, //set true for enabling 3D maps.
     auto: false,
     title: 'Bread Riots in Lebanon',
@@ -18,14 +18,14 @@ var config = {
         {
             id: 'slug-style-id',
             alignment: 'left',
-            hidden: false,
+            hidden: true,
             title: 'Display Title',
             image: './path/to/image/source.png',
             description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
             location: {
-                center: [35.81244, 33.87765],
-                zoom: 8.5,
-                pitch: 60,
+                center: [35.233333, 33.879786],
+                zoom: 8,
+                pitch: 0,
                 bearing: 0
             },
             mapAnimation: 'flyTo',
@@ -48,15 +48,15 @@ var config = {
         {
             id: 'second-identifier',
             alignment: 'right',
-            hidden: false,
+            hidden: true,
             title: 'Second Title',
             image: './path/to/image/source.png',
             description: 'Copy these sections to add to your story.',
             location: {
-                center: [35.81244, 33.87765],
-                zoom: 8.5,
-                pitch: 60,
-                bearing: -43.2,
+                center: [35.233333, 33.879786],
+                zoom:8,
+                pitch: 0,
+                bearing: 0,
                 // flyTo additional controls-
                 // These options control the flight curve, making it move
                 // slowly and zoom out almost completely before starting
@@ -65,7 +65,7 @@ var config = {
                 //curve: 1, // change the speed at which it zooms out
             },
             mapAnimation: 'flyTo',
-            rotateAnimation: true,
+            rotateAnimation: false,
             callback: '',
             onChapterEnter: [],
             onChapterExit: []
@@ -73,15 +73,15 @@ var config = {
         {
             id: 'third-identifier',
             alignment: 'left',
-            hidden: false,
+            hidden: true,
             title: 'Third Title',
             image: './path/to/image/source.png',
             description: 'Copy these sections to add to your story.',
             location: {
-                center: [35.81244, 33.87765],
-                zoom: 12.52,
-                pitch: 8.01,
-                bearing: 0.00
+                center: [35.233333, 33.879786],
+                zoom: 8,
+                pitch: 0,
+                bearing: 0
             },
             mapAnimation: 'flyTo',
             rotateAnimation: false,
@@ -92,13 +92,13 @@ var config = {
         {
             id: 'fourth-chapter',
             alignment: 'fully',
-            hidden: false,
+            hidden: true,
             title: 'Third Title',
             image: './path/to/image/source.png',
             description: 'Copy these sections to add to your story.',
             location: {
-                center: [35.81244, 33.87765],
-                zoom: 4,
+                center: [35.233333, 33.879786],
+                zoom: 8,
                 pitch: 0,
                 bearing: 0
             },
