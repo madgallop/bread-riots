@@ -13,7 +13,7 @@
         body {
             margin:0;
             padding:0;
-            font-family: sans-serif;
+            font-family: 'Avenir', sans-serif;;
         }
         a, a:hover, a:visited {
             color: #0071bc;
@@ -24,25 +24,8 @@
             width:100vw;
             position: fixed;
         }
-        #mapInset {
-            bottom:50px;
-            left:30px;
-            height: 130px;
-            width:200px;
-            max-width:100%;
-            position: fixed;
-            z-index: 1;
-            opacity: 1;
-            transition: opacity 0.5s ease-in-out;
-            pointer-events: none;
-        }
-        #mapInset .mapboxgl-ctrl-bottom-left{
-            display: none;
-        }
-        @media (max-width: 500px) {
-            #mapInset {
-                display: none;
-            }
+        .map-container {
+            display: block; /* Adjust as needed based on your initial setup */
         }
         #header {
             margin: auto;
@@ -55,16 +38,17 @@
             padding: 2vh 2vw;
             text-align: center;
         }
-        #footer {
+        #exposition {
+            margin: auto;
             width: 100%;
-            min-height: 5vh;
-            padding-top: 2vh;
-            padding-bottom: 2vh;
-            text-align: center;
-            line-height: 25px;
-            font-size: 13px;
             position: relative;
+            background-color: #e89c9c;
             z-index: 5;
+        }
+        #exposition p{
+            margin: 0;
+            padding: 2vh 2vw;
+            text-align: center;
         }
         #features {
             padding-top: 10vh;
@@ -115,6 +99,41 @@
         .step img {
             width: 100%;
         }
+        /* Marker tweaks */
+        .mapboxgl-popup-close-button {
+        display: true;
+        }
+
+        .mapboxgl-popup-content {
+            font: 400 15px/22px 'Source Sans Pro', 'Helvetica Neue', sans-serif;
+            padding: 0;
+            width: 180px;
+            /* Set the background color and opacity for the popup */
+            background-color: rgba(255, 255, 255, 0.9);
+            /* Add box shadow for the outer glow effect */
+            box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.5);
+            border-radius: 5px; /* Optional: Add border-radius for rounded corners */
+        }
+
+        .mapboxgl-popup-content h4 {
+            margin: 0;
+            padding: 10px;
+            font-weight: 400;
+            /* Adjust text color if needed */
+            color: #333;
+        }
+
+        .mapboxgl-popup-content div {
+        padding: 10px;
+        }
+
+        .mapboxgl-popup-anchor-top > .mapboxgl-popup-content {
+        margin-top: 15px;
+        }
+
+        .mapboxgl-popup-anchor-top > .mapboxgl-popup-tip {
+        border-bottom-color: #91c949;
+        }
 
         @media (max-width: 750px) {
             .centered, .lefty, .righty, .fully {
@@ -133,8 +152,8 @@
 </head>
 <body>
 
+<!-- Section 3: Map -->
 <div id="map"></div>
-<div id="mapInset"></div>
 <div id="story"></div>
 
 <script src="./config.js"></script>
@@ -175,11 +194,14 @@ function setLayerOpacity(layer) {
     });
 }
 
+
 var story = document.getElementById('story');
 var features = document.createElement('div');
 features.setAttribute('id', 'features');
 
 var header = document.createElement('div');
+var exposition = document.createElement('div');
+
 
 if (config.title) {
     var titleText = document.createElement('h1');
@@ -199,10 +221,22 @@ if (config.byline) {
     header.appendChild(bylineText);
 }
 
+if (config.introduction) {
+    var introText = document.createElement('p');
+    introText.innerText = config.introduction;
+    exposition.appendChild(introText);
+}
+
 if (header.innerText.length > 0) {
     header.classList.add(config.theme);
     header.setAttribute('id', 'header');
     story.appendChild(header);
+}
+
+if (exposition.innerText.length > 0) {
+    exposition.classList.add(config.theme);
+    exposition.setAttribute('id', 'exposition');
+    story.appendChild(exposition);
 }
 
 config.chapters.forEach((record, idx) => {
@@ -215,11 +249,11 @@ config.chapters.forEach((record, idx) => {
         chapter.appendChild(title);
     }
 
-    if (record.image) {
-        var image = new Image();
-        image.src = record.image;
-        chapter.appendChild(image);
-    }
+    // if (record.image) {
+    //     var image = new Image();
+    //     image.src = record.image;
+    //     chapter.appendChild(image);
+    // }
 
     if (record.description) {
         var story = document.createElement('p');
@@ -240,23 +274,24 @@ config.chapters.forEach((record, idx) => {
         container.classList.add('hidden');
     }
     features.appendChild(container);
+    
+    const chapterButtonDiv = document.createElement('div');
+    const chapterButton = document.createElement('button');
+    chapterButton.innerText = `Show Chapter ${idx + 1} Places`;
+    chapterButton.classList.add('chapter-button');
+
+    chapterButtonDiv.appendChild(chapterButton);
+    container.appendChild(chapterButtonDiv);
+
+    // Add event listener to each chapter button
+    chapterButton.addEventListener('click', () => {
+        displayMarkersForChapter(record.id);
+    });
 });
 
+
+
 story.appendChild(features);
-
-var footer = document.createElement('div');
-
-if (config.footer) {
-    var footerText = document.createElement('p');
-    footerText.innerHTML = config.footer;
-    footer.appendChild(footerText);
-}
-
-if (footer.innerText.length > 0) {
-    footer.classList.add(config.theme);
-    footer.setAttribute('id', 'footer');
-    story.appendChild(footer);
-}
 
 mapboxgl.accessToken = config.accessToken;
 
@@ -280,23 +315,6 @@ var map = new mapboxgl.Map({
     projection: config.projection
 });
 
-// Create a inset map if enabled in config.js
-if (config.inset) {
- var insetMap = new mapboxgl.Map({
-    container: 'mapInset', // container id
-    style: 'mapbox://styles/madgallop/clpek7wmg006401p7f4807fdg',
-    center: config.chapters[0].location.center,
-    // Hardcode above center value if you want insetMap to be static.
-    zoom: 3, // starting zoom
-    hash: false,
-    interactive: false,
-    attributionControl: false,
-    //Future: Once official mapbox-gl-js has globe view enabled,
-    //insetmap can be a globe with the following parameter.
-    //projection: 'globe'
-  });
-}
-
 if (config.showMarkers) {
     var marker = new mapboxgl.Marker({ color: config.markerColor });
     marker.setLngLat(config.chapters[0].location.center).addTo(map);
@@ -304,6 +322,39 @@ if (config.showMarkers) {
 
 // instantiate the scrollama
 var scroller = scrollama();
+
+function displayMarkersForChapter(currentChapter) {
+    const placesData = map.getSource('places')._data;
+
+    // Remove existing popups
+    const popUps = document.getElementsByClassName('mapboxgl-popup');
+    while (popUps[0]) {
+        popUps[0].remove();
+    }
+
+    // Logic to show popups based on the currentChapter
+    if (currentChapter === "slug-style-id") {
+        const firstThreePlaces = placesData.features.filter(place => place.id === 1 || place.id === 2 || place.id === 3);
+        firstThreePlaces.forEach(place => {
+            createPopUp(place);
+        });
+    } else if (currentChapter === "second-identifier") {
+        const lastThreePlaces = placesData.features.filter(place => place.id === 4 || place.id === 5 || place.id === 6);
+        lastThreePlaces.forEach(place => {
+            createPopUp(place);
+        });
+    } else {
+        // Handle other chapters if needed
+    }
+}
+
+// Function to create popup for each feature
+function createPopUp(currentFeature) {
+    const popup = new mapboxgl.Popup({ closeOnClick: true })
+        .setLngLat(currentFeature.geometry.coordinates)
+        .setHTML(`<h4>${currentFeature.properties.description}</h4>`)
+        .addTo(map);
+}
 
 
 map.on("load", function() {
@@ -317,6 +368,7 @@ map.on("load", function() {
         'features': [
         {
         'type': 'Feature',
+        'id':1,
         'properties': {
         'description':
         '<strong>Sidon, August 1987</strong><p><a href="https://www.nytimes.com/1987/08/30/world/lebanon-food-protests-spread.html" target="_blank">Marchers</a>  in the southern town of Sidon today chanted, We are hungry! We want to eat! The protests were peaceful, and shops remained closed for the day</p>',
@@ -329,6 +381,7 @@ map.on("load", function() {
         },
         {
         'type': 'Feature',
+        'id':2,
         'properties': {
         'description':
         '<strong>Rasheiye, August 1987</strong><p><a href="https://www.nytimes.com/1987/08/30/world/lebanon-food-protests-spread.html" target="_blank">The police reported</a> protest marches in Rasheiye, but said the demonstrators dispersed peacefully.</p>',
@@ -341,6 +394,7 @@ map.on("load", function() {
         },
         {
         'type': 'Feature',
+        'id':3,
         'properties': {
         'description':
         '<strong>West Beirut, August 1987</strong><p><a href="https://www.nytimes.com/1987/08/30/world/lebanon-food-protests-spread.html" target="_blank">Protests</a> over food prices spread today from the capital to other Lebanese towns as steel-helmeted Syrian soldiers with heavy machine guns continued to patrol the main shopping centers in mainly Moslem West Beirut to prevent further disturbances.</p>',
@@ -353,6 +407,7 @@ map.on("load", function() {
         },
         {
         'type': 'Feature',
+        'id':4,
         'properties': {
         'description':
         '<strong>The Highway to Beirut Airport, August 1987</strong><p><a href="https://www.latimes.com/archives/la-xpm-1987-08-29-mn-1369-story.html" target="_blank">Men carrying automatic rifles</a> and rocket-propelled grenades joined other rioters in setting tires ablaze on the highway to Beirut airport, blocking traffic for four hours. Holding their weapons high, the gunmen shouted: Death to America! Death to France! Death to Israel! Some rioters waved posters of Shia militia chieftain Nabih Berri and the Ayatollah Ruhollah Khomeini, Iran’s revolutionary patriarch. They stoned the few motorists who braved the blazing barriers on the airport highway.</p>',
@@ -365,6 +420,7 @@ map.on("load", function() {
         },
         {
         'type': 'Feature',
+        'id':5,
         'properties': {
         'description':
         '<strong>Corniche Mazraa, August 1987</strong><p><a href="https://www.latimes.com/archives/la-xpm-1987-08-29-mn-1369-story.html" target="_blank">Protestors</a> marched down West Beirut’s Corniche Mazraa commercial thoroughfare chanting slogans. “We want food! We want medicine! We want fuel!” they shouted. Heavily armed Syrian soldiers surrounded the marchers as they chanted: “Down with the dollar! Down with imperialism!”</p>',
@@ -377,6 +433,7 @@ map.on("load", function() {
         },
         {
         'type': 'Feature',
+        'id':5,
         'properties': {
         'description':
         '<strong>West Beirut, August 1987</strong><p><a href="https://www.nytimes.com/1987/08/30/world/lebanon-food-protests-spread.html" target="_blank">In West Beirut,</a>"In Muslim West Beirut, Syrian commandos fired automatic rifles in the air to disperse about 30 rioters who tried to block traffic with burning tires. Shops, banks and restaurants on the avenue closed for the day. Money changers throughout West Beirut shut their booths to escape the wrath of rioters, who smashed the glass fronts of several money exchanges Thursday in the Hamra district."</p>',
@@ -389,6 +446,7 @@ map.on("load", function() {
         },
         {
         'type': 'Feature',
+        'id': 6,
         'properties': {
         'description':
         '<strong>West Beirut, August 1987</strong><p><a href="https://www.nytimes.com/1987/08/30/world/lebanon-food-protests-spread.html" target="_blank">In West Beirut,</a>"In Muslim West Beirut, Syrian commandos fired automatic rifles in the air to disperse about 30 rioters who tried to block traffic with burning tires. Shops, banks and restaurants on the avenue closed for the day. Money changers throughout West Beirut shut their booths to escape the wrath of rioters, who smashed the glass fronts of several money exchanges Thursday in the Hamra district."</p>',
@@ -404,71 +462,32 @@ map.on("load", function() {
         });
         // Add a layer showing the places.
         map.addLayer({
-        'id': 'places',
-        'type': 'symbol',
-        'source': 'places',
-        'layout': {
-        'icon-image': ['get', 'icon'],
-        'icon-size': 1,
-        'icon-allow-overlap': true,
+            'id': 'places',
+            'type': 'symbol',
+            'source': 'places',
+            'layout': {
+            'icon-image': ['get', 'icon'],
+            'icon-size': 1,
+            'icon-allow-overlap': true,
         }
         });
-        
-        // When a click event occurs on a feature in the places layer, open a popup at the
-        // location of the feature, with description HTML from its properties.
-        map.on('click', 'places', (e) => {
-        // Copy coordinates array.
-        const coordinates = e.features[0].geometry.coordinates.slice();
-        const description = e.features[0].properties.description;
-        
-        // Ensure that if the map is zoomed out such that multiple
-        // copies of the feature are visible, the popup appears
-        // over the copy being pointed to.
-        while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-        coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-        }
-        
-        new mapboxgl.Popup()
-        .setLngLat(coordinates)
-        .setHTML(description)
-        .addTo(map);
-        });
-        
-        // Change the cursor to a pointer when the mouse is over the places layer.
+
+         // Change the cursor to a pointer when the mouse is over the places layer.
         map.on('mouseenter', 'places', () => {
-        map.getCanvas().style.cursor = 'pointer';
+            map.getCanvas().style.cursor = 'pointer';
         });
-        
+
         // Change it back to a pointer when it leaves.
         map.on('mouseleave', 'places', () => {
-        map.getCanvas().style.cursor = '';
+            map.getCanvas().style.cursor = '';
         });
-    if (config.use3dTerrain) {
-        map.addSource('mapbox-dem', {
-            'type': 'raster-dem',
-            'url': 'mapbox://mapbox.mapbox-terrain-dem-v1',
-            'tileSize': 512,
-            'maxzoom': 14
-        });
-        // add the DEM source as a terrain layer with exaggerated height
-        map.setTerrain({ 'source': 'mapbox-dem', 'exaggeration': 1.5 });
 
-        // add a sky layer that will show when the map is highly pitched
-        map.addLayer({
-            'id': 'sky',
-            'type': 'sky',
-            'paint': {
-                'sky-type': 'atmosphere',
-                'sky-atmosphere-sun': [0.0, 0.0],
-                'sky-atmosphere-sun-intensity': 15
-            }
-        });
-    };
+        
 
-    // As the map moves, grab and update bounds in inset map.
-    if (config.inset) {
-    map.on('move', getInsetBounds);
-    }
+
+
+            
+        
     // setup the instance, pass callback functions
     scroller
     .setup({
@@ -483,20 +502,16 @@ map.on("load", function() {
         response.element.classList.add('active');
         map[chapter.mapAnimation || 'flyTo'](chapter.location);
 
-        // Incase you do not want to have a dynamic inset map,
-        // rather want to keep it a static view but still change the
-        // bbox as main map move: comment out the below if section.
-        if (config.inset) {
-          if (chapter.location.zoom < 5) {
-            insetMap.flyTo({center: chapter.location.center, zoom: 0});
-          }
-          else {
-            insetMap.flyTo({center: chapter.location.center, zoom: 3});
-          }
-        }
-        if (config.showMarkers) {
-            marker.setLngLat(chapter.location.center);
-        }
+        map.on('click', (event) => {
+            const features = map.queryRenderedFeatures(event.point, { layers: ['places'] });
+            if (!features.length) return;
+            
+            displayMarkersForChapter(chapter);
+        });
+
+        // displayMarkersForChapter(chapter);
+
+
         if (chapter.onChapterEnter.length > 0) {
             chapter.onChapterEnter.forEach(setLayerOpacity);
         }
@@ -521,6 +536,10 @@ map.on("load", function() {
         }
     })
     .onStepExit(response => {
+        const popUps = document.getElementsByClassName('mapboxgl-popup');
+        while (popUps[0]) {
+            popUps[0].remove();
+        }
         var chapter = config.chapters.find(chap => chap.id === response.element.id);
         response.element.classList.remove('active');
         if (chapter.onChapterExit.length > 0) {
@@ -533,88 +552,6 @@ map.on("load", function() {
         document.querySelectorAll('[data-scrollama-index="0"]')[0].scrollIntoView();
     }
 });
-
-//Helper functions for insetmap
-function getInsetBounds() {
-            let bounds = map.getBounds();
-
-            let boundsJson = {
-                "type": "FeatureCollection",
-                "features": [{
-                    "type": "Feature",
-                    "properties": {},
-                    "geometry": {
-                        "type": "Polygon",
-                        "coordinates": [
-                            [
-                                [
-                                    bounds._sw.lng,
-                                    bounds._sw.lat
-                                ],
-                                [
-                                    bounds._ne.lng,
-                                    bounds._sw.lat
-                                ],
-                                [
-                                    bounds._ne.lng,
-                                    bounds._ne.lat
-                                ],
-                                [
-                                    bounds._sw.lng,
-                                    bounds._ne.lat
-                                ],
-                                [
-                                    bounds._sw.lng,
-                                    bounds._sw.lat
-                                ]
-                            ]
-                        ]
-                    }
-                }]
-            }
-
-            if (initLoad) {
-                addInsetLayer(boundsJson);
-                initLoad = false;
-            } else {
-                updateInsetLayer(boundsJson);
-            }
-
-        }
-
-function addInsetLayer(bounds) {
-    insetMap.addSource('boundsSource', {
-        'type': 'geojson',
-        'data': bounds
-    });
-
-    insetMap.addLayer({
-        'id': 'boundsLayer',
-        'type': 'fill',
-        'source': 'boundsSource', // reference the data source
-        'layout': {},
-        'paint': {
-            'fill-color': '#fff', // blue color fill
-            'fill-opacity': 0.2
-        }
-    });
-    // // Add a black outline around the polygon.
-    insetMap.addLayer({
-        'id': 'outlineLayer',
-        'type': 'line',
-        'source': 'boundsSource',
-        'layout': {},
-        'paint': {
-            'line-color': '#000',
-            'line-width': 1
-        }
-    });
-}
-
-function updateInsetLayer(bounds) {
-    insetMap.getSource('boundsSource').setData(bounds);
-}
-
 
 
 // setup resize event
