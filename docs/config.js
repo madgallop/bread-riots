@@ -1,6 +1,6 @@
 var config = {
     style: 'mapbox://styles/madgallop/clrmnixwt004j01nl2r52gj1g',
-    accessToken: 'pk.eyJ1IjoibWFkZ2FsbG9wIiwiYSI6ImNsbmx1MnpyNjAxcHEydG1zZDFnZG9zc2IifQ.XbyjH1tI-DMwrOdHHDPKQQ',
+    accessToken: 'pk.eyJ1IjoibWFkZ2FsbG9wIiwiYSI6ImNtN3FoazRiaTBuc20ybW9kY2ZlbjFubDEifQ.VIQ-5iy3elzuoCU-68pjlg',
     showMarkers: false,
     markerColor: '#3FB1CE',
     //projection: 'equirectangular',
