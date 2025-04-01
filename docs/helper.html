@@ -4,8 +4,14 @@
     <meta charset='utf-8' />
     <title>Position Helper</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.js'></script>
-    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.css' rel='stylesheet' />
+
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.15.0/mapbox-gl.css" rel="stylesheet">
+
+
+    <!-- <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v2.11.0/mapbox-gl.css' rel='stylesheet' /> -->
+
     <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.min.js'></script>
     <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.7.2/mapbox-gl-geocoder.css' type='text/css' />
     <style>
@@ -33,6 +39,8 @@
 <div id="position"></div>
 
 <script>
+    console.log("Mapbox GL JS Loaded:", typeof mapboxgl !== "undefined");
+
     var position = document.getElementById("position");
 
     mapboxgl.accessToken = 'pk.eyJ1IjoibWFkZ2FsbG9wIiwiYSI6ImNsbmx1MnpyNjAxcHEydG1zZDFnZG9zc2IifQ.XbyjH1tI-DMwrOdHHDPKQQ';
