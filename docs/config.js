@@ -1,5 +1,5 @@
 var config = {
-    style: 'mapbox://styles/madgallop/clnv6jj6h001c01pdf1lde9lk',
+    style: 'mapbox://styles/mapbox/streets-v11',
     accessToken: 'pk.eyJ1IjoibWFkZ2FsbG9wIiwiYSI6ImNtN3FoazRiaTBuc20ybW9kY2ZlbjFubDEifQ.VIQ-5iy3elzuoCU-68pjlg',
     showMarkers: false,
     markerColor: '#3FB1CE',
