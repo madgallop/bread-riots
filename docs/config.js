@@ -1,6 +1,7 @@
 var config = {
     style: 'mapbox://styles/madgallop/clpek7wmg006401p7f4807fdg',
-    accessToken: 'pk.eyJ1IjoibWFkZ2FsbG9wIiwiYSI6ImNtN3FoazRiaTBuc20ybW9kY2ZlbjFubDEifQ.VIQ-5iy3elzuoCU-68pjlg',
+    accessToken: 'pk.eyJ1IjoibWFkZ2FsbG9wIiwiYSI6ImNtbDJrenZlZzBqb24zY29mN3U2a2ZsdzEifQ.XFAkSfBIMNJbjkeYthnQFA',
+    // accessToken: 'pk.eyJ1IjoibWFkZ2FsbG9wIiwiYSI6ImNtN3FoazRiaTBuc20ybW9kY2ZlbjFubDEifQ.VIQ-5iy3elzuoCU-68pjlg',
     showMarkers: false,
     markerColor: '#3FB1CE',
     //projection: 'equirectangular',
